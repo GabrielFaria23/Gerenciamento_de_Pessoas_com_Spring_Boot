@@ -3,7 +3,9 @@ package one.digitalinnovation.personapi.controller;
 import one.digitalinnovation.personapi.dto.response.MessageResponseDTO;
 import one.digitalinnovation.personapi.entity.Person;
 import one.digitalinnovation.personapi.repository.PersonRepository;
+import one.digitalinnovation.personapi.service.PersonService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,19 +16,16 @@ import java.util.List;
 public class PersonController {
 
 
-    private PersonRepository personRepository;
+    private PersonService personService;
 
-    @Autowired //fazer a declaração de dependencias em um contrutor facilita na hora dos testes unitarios
-    public PersonController(PersonRepository personRepository) {
-        this.personRepository = personRepository;
+    @Autowired
+    public PersonController(PersonService personService) {
+        this.personService = personService;
     }
 
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     public MessageResponseDTO createPerson(@RequestBody Person person) {
-        Person savedPerson = personRepository.save(person);
-        return MessageResponseDTO
-                .builder()
-                .message("Created person with ID "+ savedPerson.getId())
-                .build();
+        return personService.createPerson(person);
     }
 }
